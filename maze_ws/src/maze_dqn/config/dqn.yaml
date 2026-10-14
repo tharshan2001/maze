@@ -1,0 +1,16 @@
+dqn_nav_node:
+  ros__parameters:
+    use_sim_time: true
+    model_path: ""            # path to trained .zip (SB3) or .pt (torch); empty = untrained demo
+    n_rays: 36                # down-sampled LiDAR beams in the observation
+    max_range: 3.5            # LiDAR max range (m), must match the URDF sensor
+    goal_tolerance: 0.20      # distance (m) at which the goal is considered reached
+    collision_distance: 0.18  # min LiDAR range (m) treated as a collision
+    control_period: 0.2       # seconds between policy steps
+    max_linear_vel: 0.18
+    max_angular_vel: 1.2
+    world_name: maze
+    robot_name: turtlebot3_burger
+    spawn_x: -1.25
+    spawn_y: 1.25
+    spawn_yaw: 0.0

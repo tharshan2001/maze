@@ -1,0 +1,21 @@
+services:
+  ros2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tb3-maze-nav:jazzy
+    container_name: tb3-maze
+    environment:
+      - DISPLAY=host.docker.internal:0
+      - QT_X11_NO_MITSHM=1
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - ROS_DOMAIN_ID=7
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - CYCLONEDDS_URI=file:///opt/cyclonedds.xml
+    shm_size: "2gb"
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: bash

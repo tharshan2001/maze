@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config">
+  <Domain id="any">
+    <General>
+      <!-- All nodes run inside the same container, so restrict traffic to the
+           loopback interface. This avoids unreliable multicast on the Docker
+           bridge network (common on Docker Desktop for macOS). -->
+      <Interfaces>
+        <NetworkInterface autodetermine="false" name="lo" priority="default" multicast="default" />
+      </Interfaces>
+      <AllowMulticast>default</AllowMulticast>
+    </General>
+    <Internal>
+      <Watermarks>
+        <WhcHigh>500kB</WhcHigh>
+      </Watermarks>
+    </Internal>
+  </Domain>
+</CycloneDDS>

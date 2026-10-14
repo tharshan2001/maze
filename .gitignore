@@ -1,0 +1,23 @@
+# ROS 2 build artifacts
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# DQN training artifacts
+maze_ws/src/maze_dqn/models/*.pt
+maze_ws/src/maze_dqn/runs/
+*.pth
+tensorboard/
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp

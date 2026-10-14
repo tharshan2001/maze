@@ -1,0 +1,13 @@
+.git
+build/
+install/
+log/
+**/__pycache__/
+*.pyc
+.venv/
+venv/
+runs/
+models/
+tensorboard/
+*.csv
+.DS_Store
