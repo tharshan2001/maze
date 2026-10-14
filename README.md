@@ -21,7 +21,8 @@ scripts/             # maze/map generators, goal sender, metrics, docker helpers
 
 * Docker Desktop (macOS/Windows/Linux) — the project runs in an Ubuntu 24.04 /
   ROS 2 Jazzy container because ROS 2 Jazzy + Gazebo have no native macOS build.
-* macOS GUI only: XQuartz (`brew install --cask xquartz`).
+* macOS GUI only: use the built-in Screen Sharing app to view the VNC desktop
+  (see *Viewing the GUI* below). XQuartz is optional and unreliable for Gazebo.
 
 ## 1. Build
 
@@ -103,12 +104,35 @@ python3 scripts/send_goals.py --method nav2 --goals "1.25,-1.25" "1.25,1.25" "-1
 `results.csv` records travel time, path length, collisions and minimum LiDAR
 range per goal — used for the comparison table in the report.
 
+## Viewing the GUI (VNC — recommended on macOS)
+
+XQuartz cannot give Gazebo/RViz a working OpenGL context on Apple Silicon, and
+Gazebo's Qt GUI hangs without a DBus session. The reliable path is a headless
+VNC desktop (`Xvfb` + `x11vnc`) with software Mesa. One command sets it all up:
+
+```bash
+bash scripts/viva_demo.sh          # Dijkstra (default)
+bash scripts/viva_demo.sh astar    # A*
+bash scripts/viva_demo.sh dqn      # Deep Q-Learning policy
+bash scripts/viva_demo.sh stop     # stop everything
+```
+
+Then, on the host, open the desktop:
+
+```bash
+open vnc://localhost:5901          # macOS Screen Sharing (no password)
+```
+
+Two windows appear: **Gazebo Sim** (3D maze) and **RViz**. In RViz choose the
+**2D Goal Pose** tool and click a free cell; the robot plans and drives there.
+
 ## VIVA checklist
 
 1. `bash scripts/build.sh`
-2. `ros2 launch maze_bringup demo.launch.py` and reach 3 different clicked goals.
-3. Repeat with `planner:=astar` to compare path length / time.
-4. Start the DQN node (`method:=dqn model_path:=...`) and reach a goal.
+2. `bash scripts/viva_demo.sh` and (in RViz) reach 3 different clicked goals.
+3. `bash scripts/viva_demo.sh astar` to compare path length / time.
+4. `bash scripts/viva_demo.sh dqn` to run the DQN policy node.
+5. `bash scripts/viva_demo.sh stop` when finished.
 
 ## Environment notes
 
@@ -127,7 +151,7 @@ range per goal — used for the comparison table in the report.
 ## Notes / limitations
 
 * The world spans 4 x 4 m with 0.5 m corridors, so a corridor half-width is
-  0.25 m. `inflation_radius` is set to **0.18 m** (below the half-width) to keep
+  0.25 m. `inflation_radius` is set to **0.15 m** (below the half-width) to keep
   a cost-free centreline through every corridor; a larger radius (e.g. 0.30 m)
   makes a single spurious obstacle seal a corridor and the planner fail.
 * The global costmap plans on the **static map only** (no obstacle layer); the

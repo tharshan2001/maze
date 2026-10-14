@@ -16,6 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-jazzy-joint-state-publisher \
     ros-jazzy-rviz2 \
     ros-jazzy-rmw-cyclonedds-cpp \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    dbus-x11 \
     python3-colcon-common-extensions \
     python3-pip \
     python3-numpy \
