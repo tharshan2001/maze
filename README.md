@@ -21,8 +21,10 @@ scripts/             # maze/map generators, goal sender, metrics, docker helpers
 
 * Docker Desktop (macOS/Windows/Linux) — the project runs in an Ubuntu 24.04 /
   ROS 2 Jazzy container because ROS 2 Jazzy + Gazebo have no native macOS build.
-* macOS GUI only: use the built-in Screen Sharing app to view the VNC desktop
-  (see *Viewing the GUI* below). XQuartz is optional and unreliable for Gazebo.
+* GUI: on **Windows** run natively in WSL2 (windows appear via WSLg) — see
+  *Running on Windows* below. On **macOS** use the built-in Screen Sharing app to
+  view the VNC desktop (see *Viewing the GUI* below); XQuartz is optional and
+  unreliable for Gazebo.
 
 ## 1. Build
 
@@ -125,6 +127,39 @@ open vnc://localhost:5901          # macOS Screen Sharing (no password)
 
 Two windows appear: **Gazebo Sim** (3D maze) and **RViz**. In RViz choose the
 **2D Goal Pose** tool and click a free cell; the robot plans and drives there.
+
+## Running on Windows (WSL2 / WSLg)
+
+On Windows 11 the same code runs **natively** (x86_64, no emulation) and shows
+the Gazebo/RViz windows directly through **WSLg** — no VNC needed.
+
+**Option A — native ROS 2 in WSL2 (fastest, recommended):**
+
+```powershell
+wsl --install -d Ubuntu-24.04
+```
+
+Then, inside the Ubuntu 24.04 shell, install the stack and build the same code:
+
+```bash
+sudo apt install ros-jazzy-desktop ros-jazzy-navigation2 ros-jazzy-nav2-bringup \
+  ros-jazzy-slam-toolbox ros-jazzy-ros-gz ros-jazzy-xacro ros-jazzy-rviz2 \
+  ros-jazzy-robot-state-publisher ros-jazzy-rmw-cyclonedds-cpp \
+  python3-colcon-common-extensions
+cd /path/to/maze_ws && colcon build --symlink-install
+ros2 launch maze_bringup demo.launch.py       # Gazebo/RViz open via WSLg
+```
+
+**Option B — Docker Desktop (WSL2 backend) + WSLg:** reuse the container, but
+pass WSLg's display through instead of using VNC:
+
+```bash
+docker compose run --rm \
+  -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 ros2 bash
+```
+
+`compose.yaml:9` defaults to `DISPLAY=host.docker.internal:0`, which targets a
+Windows X server (e.g. VcXsrv/X410); switch to `DISPLAY=:0` to use WSLg instead.
 
 ## VIVA checklist
 
